@@ -290,13 +290,18 @@ export function closeDb(): void {
 let neonatalClient: any = null;
 const IS_NEON = () => !!process.env.DATABASE_URL;
 
+function toPostgresParams(sql: string): string {
+  let i = 0;
+  return sql.replace(/\?/g, () => `$${++i}`);
+}
+
 export async function query(sql: string, params?: any[]): Promise<any[]> {
   if (IS_NEON()) {
     if (!neonatalClient) {
       const { neon } = await import('@neondatabase/serverless');
       neonatalClient = neon(process.env.DATABASE_URL!);
     }
-    return await neonatalClient.query(sql, params || []);
+    return await neonatalClient.query(toPostgresParams(sql), params || []);
   }
   if (!db) await initDatabase();
   if (params && params.length > 0) {
@@ -332,7 +337,7 @@ export async function execute(sql: string, params?: any[]): Promise<{ rowCount: 
       const { neon } = await import('@neondatabase/serverless');
       neonatalClient = neon(process.env.DATABASE_URL!);
     }
-    const result = await neonatalClient.query(sql, params || []);
+    const result = await neonatalClient.query(toPostgresParams(sql), params || []);
     return { rowCount: result?.length || 0, rows: result };
   }
   if (!db) await initDatabase();
