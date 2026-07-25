@@ -1,6 +1,17 @@
-import initSqlJs from 'sql.js';
 import fs from 'fs';
 import path from 'path';
+
+// Import asm.js version — no separate .wasm binary needed (works on Vercel serverless)
+let initSqlJs: any = null;
+async function getInitSqlJs() {
+  if (initSqlJs) return initSqlJs;
+  try {
+    initSqlJs = (await import(/* webpackIgnore: true */ 'sql.js/dist/sql-asm.js')).default;
+  } catch {
+    initSqlJs = (await import('sql.js')).default;
+  }
+  return initSqlJs;
+}
 
 let db: any = null;
 const DB_PATH = path.join(process.cwd(), 'data.db');
@@ -233,7 +244,8 @@ export async function initDatabase(): Promise<any> {
   }
 
   if (db) return db;
-  const SQL = await initSqlJs();
+  const initFn = await getInitSqlJs();
+  const SQL = await initFn();
   if (fs.existsSync(DB_PATH)) {
     const buffer = fs.readFileSync(DB_PATH);
     db = new SQL.Database(buffer);
