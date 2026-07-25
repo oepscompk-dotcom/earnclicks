@@ -14,7 +14,6 @@ async function getInitSqlJs() {
 }
 
 let db: any = null;
-// Use /tmp on Vercel (writable), else cwd
 const isVercel = !!process.env.VERCEL;
 const DB_PATH = path.join(isVercel ? '/tmp' : process.cwd(), 'data.db');
 
