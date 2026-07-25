@@ -232,16 +232,16 @@ export function getDb(): any {
 
 export async function initDatabase(): Promise<any> {
   if (IS_NEON()) {
-    if (neonClient) return neonClient;
+    if (neonatalClient) return neonatalClient;
     const { neon } = await import('@neondatabase/serverless');
-    neonClient = neon(process.env.DATABASE_URL!);
+    neonatalClient = neon(process.env.DATABASE_URL!);
     const { neonSchema } = await import('./neon-schema');
-    try { await neonClient(neonSchema); } catch {}
+    try { await neonatalClient.query(neonSchema); } catch {}
     try {
-      await neonClient(`INSERT INTO settings (key, value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT (key) DO NOTHING`);
-      await neonClient(`INSERT INTO settings (key, value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT (key) DO NOTHING`);
+      await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT (key) DO NOTHING`);
+      await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT (key) DO NOTHING`);
     } catch {}
-    return neonClient;
+    return neonatalClient;
   }
 
   if (db) return db;
@@ -279,24 +279,16 @@ export function closeDb(): void {
 
 // ─── Unified query/execute (auto-detects Neon vs sql.js) ───
 
-let neonClient: any = null;
+let neonatalClient: any = null;
 const IS_NEON = () => !!process.env.DATABASE_URL;
-
-function convertParams(sql: string, params?: any[]): { text: string; args?: any[] } {
-  if (!params || params.length === 0) return { text: sql };
-  let idx = 0;
-  const text = sql.replace(/\?/g, () => `$${++idx}`);
-  return { text, args: params };
-}
 
 export async function query(sql: string, params?: any[]): Promise<any[]> {
   if (IS_NEON()) {
-    if (!neonClient) {
+    if (!neonatalClient) {
       const { neon } = await import('@neondatabase/serverless');
-      neonClient = neon(process.env.DATABASE_URL!);
+      neonatalClient = neon(process.env.DATABASE_URL!);
     }
-    const { text, args } = convertParams(sql, params);
-    return await neonClient(text, ...(args || []));
+    return await neonatalClient.query(sql, params || []);
   }
   if (!db) await initDatabase();
   if (params && params.length > 0) {
@@ -328,12 +320,11 @@ export async function query(sql: string, params?: any[]): Promise<any[]> {
 
 export async function execute(sql: string, params?: any[]): Promise<{ rowCount: number; rows?: any[] }> {
   if (IS_NEON()) {
-    if (!neonClient) {
+    if (!neonatalClient) {
       const { neon } = await import('@neondatabase/serverless');
-      neonClient = neon(process.env.DATABASE_URL!);
+      neonatalClient = neon(process.env.DATABASE_URL!);
     }
-    const { text, args } = convertParams(sql, params);
-    const result = await neonClient(text, ...(args || []));
+    const result = await neonatalClient.query(sql, params || []);
     return { rowCount: result?.length || 0, rows: result };
   }
   if (!db) await initDatabase();
