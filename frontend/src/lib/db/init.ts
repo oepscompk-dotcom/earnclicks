@@ -241,8 +241,8 @@ export async function initDatabase(): Promise<any> {
       try { await neonatalClient.query(stmt + ';'); } catch {}
     }
     try {
-      await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT (key) DO NOTHING`);
-      await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT (key) DO NOTHING`);
+      await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT ("key") DO NOTHING`);
+      await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT ("key") DO NOTHING`);
     } catch {}
     return neonatalClient;
   }
