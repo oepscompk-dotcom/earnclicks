@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 
 CREATE TABLE IF NOT EXISTS settings (
   id SERIAL PRIMARY KEY,
-  key TEXT UNIQUE NOT NULL,
+  "key" TEXT UNIQUE NOT NULL,
   value TEXT NOT NULL,
   group_name TEXT DEFAULT 'general',
   type TEXT DEFAULT 'text'
