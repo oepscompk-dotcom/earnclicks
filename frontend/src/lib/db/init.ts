@@ -237,13 +237,26 @@ export async function initDatabase(): Promise<any> {
     neonatalClient = neon(process.env.DATABASE_URL!);
     const { neonSchema } = await import('./neon-schema');
     const statements = neonSchema.split(';').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+    const errors: string[] = [];
     for (const stmt of statements) {
-      try { await neonatalClient.query(stmt + ';'); } catch {}
+      try {
+        await neonatalClient.query(stmt + ';');
+      } catch (e: any) {
+        errors.push({ stmt: stmt.substring(0, 80), error: e.message });
+      }
     }
     try {
       await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT ("key") DO NOTHING`);
       await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT ("key") DO NOTHING`);
-    } catch {}
+    } catch (e: any) {
+      errors.push({ stmt: 'INSERT settings', error: e.message });
+    }
+    if (errors.length) {
+      console.error('Neon init errors:', JSON.stringify(errors));
+    }
+    if (!neonatalClient._connectionActive) {
+      console.error('Neon client not active');
+    }
     return neonatalClient;
   }
 
