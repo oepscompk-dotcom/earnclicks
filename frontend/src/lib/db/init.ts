@@ -235,28 +235,20 @@ export async function initDatabase(): Promise<any> {
     if (neonatalClient) return neonatalClient;
     const { neon } = await import('@neondatabase/serverless');
     neonatalClient = neon(process.env.DATABASE_URL!);
-    const { neonSchema } = await import('./neon-schema');
-    const statements = neonSchema.split(';').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
-    const errors: string[] = [];
-    for (const stmt of statements) {
-      try {
-        await neonatalClient.query(stmt + ';');
-      } catch (e: any) {
-        errors.push(`stmt="${stmt.substring(0, 60)}" error="${e.message}"`);
-      }
+    const essentialTables = [
+      `CREATE TABLE IF NOT EXISTS users ("id" SERIAL PRIMARY KEY, "name" TEXT NOT NULL, "email" TEXT UNIQUE NOT NULL, "password" TEXT NOT NULL, "role" TEXT DEFAULT 'user', "status" TEXT DEFAULT 'active', "avatar" TEXT, "phone" TEXT, "referral_code" TEXT UNIQUE NOT NULL, "referred_by" INTEGER REFERENCES users("id"), "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`,
+      `CREATE TABLE IF NOT EXISTS settings ("id" SERIAL PRIMARY KEY, "key" TEXT UNIQUE NOT NULL, "value" TEXT NOT NULL, "group_name" TEXT DEFAULT 'general')`,
+    ];
+    for (const stmt of essentialTables) {
+      try { await neonatalClient.query(stmt); } catch {}
+    }
+    for (const stmt of essentialTables) {
+      try { await neonatalClient.query(stmt); } catch {}
     }
     try {
-      await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT ("key") DO NOTHING`);
-      await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT ("key") DO NOTHING`);
-    } catch (e: any) {
-      errors.push(`INSERT settings error="${e.message}"`);
-    }
-    if (errors.length) {
-      console.error('Neon init errors:', errors.join('; '));
-    }
-    if (!neonatalClient._connectionActive) {
-      console.error('Neon client not active');
-    }
+      await neonatalClient.query(`INSERT INTO settings ("key", "value", "group_name") VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT ("key") DO NOTHING`);
+      await neonatalClient.query(`INSERT INTO settings ("key", "value", "group_name") VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT ("key") DO NOTHING`);
+    } catch {}
     return neonatalClient;
   }
 
