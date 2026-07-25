@@ -249,10 +249,10 @@ export async function initDatabase(): Promise<any> {
       await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT ("key") DO NOTHING`);
       await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT ("key") DO NOTHING`);
     } catch (e: any) {
-      errors.push({ stmt: 'INSERT settings', error: e.message });
+      errors.push(`INSERT settings error="${e.message}"`);
     }
     if (errors.length) {
-      console.error('Neon init errors:', JSON.stringify(errors));
+      console.error('Neon init errors:', errors.join('; '));
     }
     if (!neonatalClient._connectionActive) {
       console.error('Neon client not active');
