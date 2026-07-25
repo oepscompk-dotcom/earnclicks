@@ -236,7 +236,10 @@ export async function initDatabase(): Promise<any> {
     const { neon } = await import('@neondatabase/serverless');
     neonatalClient = neon(process.env.DATABASE_URL!);
     const { neonSchema } = await import('./neon-schema');
-    try { await neonatalClient.query(neonSchema); } catch {}
+    const statements = neonSchema.split(';').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+    for (const stmt of statements) {
+      try { await neonatalClient.query(stmt + ';'); } catch {}
+    }
     try {
       await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT (key) DO NOTHING`);
       await neonatalClient.query(`INSERT INTO settings (key, value, group_name) VALUES ('site_tagline', 'Earn Crypto by Completing Social Media Tasks', 'general') ON CONFLICT (key) DO NOTHING`);
