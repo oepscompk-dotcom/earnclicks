@@ -1,20 +1,19 @@
 import { NextResponse } from 'next/server';
-import { initDatabase, getDb } from '@/lib/db/init';
+import { initDatabase, query } from '@/lib/db/init';
 import { verifyToken } from '@/lib/auth-jwt';
 
 export async function GET() {
   try {
     await initDatabase();
-    const db = getDb();
 
-    const totalUsers = db.exec(`SELECT COUNT(*) as count FROM users`);
-    const totalTasks = db.exec(`SELECT COUNT(*) as count FROM tasks`);
-    const totalCampaigns = db.exec(`SELECT COUNT(*) as count FROM campaigns`);
-    const totalDeposits = db.exec(`SELECT COUNT(*) as count FROM deposits WHERE status='completed'`);
-    const pendingKyc = db.exec(`SELECT COUNT(*) as count FROM kyc WHERE status='pending'`);
-    const totalWithdrawals = db.exec(`SELECT COUNT(*) as count FROM withdrawals WHERE status='pending'`);
+    const totalUsers = await query(`SELECT COUNT(*) as count FROM users`);
+    const totalTasks = await query(`SELECT COUNT(*) as count FROM tasks`);
+    const totalCampaigns = await query(`SELECT COUNT(*) as count FROM campaigns`);
+    const totalDeposits = await query(`SELECT COUNT(*) as count FROM deposits WHERE status='completed'`);
+    const pendingKyc = await query(`SELECT COUNT(*) as count FROM kyc WHERE status='pending'`);
+    const totalWithdrawals = await query(`SELECT COUNT(*) as count FROM withdrawals WHERE status='pending'`);
 
-    const getCount = (result: any) => result?.[0]?.values?.[0]?.[0] || 0;
+    const getCount = (result: any) => result?.[0]?.count || 0;
 
     return NextResponse.json({
       stats: {

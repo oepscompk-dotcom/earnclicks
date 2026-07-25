@@ -1,17 +1,14 @@
 import { NextResponse } from 'next/server';
-import { initDatabase, getDb } from '@/lib/db/init';
+import { initDatabase, query } from '@/lib/db/init';
 
 export async function GET() {
   try {
     await initDatabase();
-    const db = getDb();
-    const result = db.exec(`SELECT key, value FROM settings`);
+    const result = await query(`SELECT key, value FROM settings`);
     const settings: Record<string, string> = {};
-    if (result.length) {
-      result[0].values.forEach((row: any) => {
-        settings[row[0] as string] = row[1] as string;
-      });
-    }
+    result.forEach((row: any) => {
+      settings[row.key] = row.value;
+    });
 
     return NextResponse.json({
       logos: {

@@ -1,26 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initDatabase, getDb } from '@/lib/db/init';
+import { initDatabase, query } from '@/lib/db/init';
 import { signToken, verifyPassword } from '@/lib/auth-jwt';
 
 export async function POST(req: NextRequest) {
   try {
     await initDatabase();
-    const db = getDb();
     const { email, password } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 422 });
     }
 
-    const result = db.exec(`SELECT * FROM users WHERE email = ?`, { bind: [email.toLowerCase()] });
-    if (!result.length || !result[0].values.length) {
+    const users = await query(`SELECT * FROM users WHERE email = ?`, [email.toLowerCase()]);
+    if (!users.length) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
     }
 
-    const cols = result[0].columns;
-    const vals = result[0].values[0];
-    const user: any = {};
-    cols.forEach((col: string, i: number) => { user[col] = vals[i]; });
+    const user: any = users[0];
 
     if (!verifyPassword(password, user.password)) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });

@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initDatabase, getDb, saveDb } from '@/lib/db/init';
+import { initDatabase, execute } from '@/lib/db/init';
 import { verifyToken } from '@/lib/auth-jwt';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ action: string[] }> }) {
   try {
     await initDatabase();
-    const db = getDb();
     const authHeader = req.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     const payload = verifyToken(authHeader.slice(7));
@@ -13,8 +12,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ act
 
     const { action } = await params;
     const [id, operation] = action;
-    db.run(`UPDATE campaigns SET status = ? WHERE id = ?`, [operation, id]);
-    saveDb();
+    await execute(`UPDATE campaigns SET status = ? WHERE id = ?`, [operation, id]);
     return NextResponse.json({ message: `Campaign ${operation} successful` });
   } catch {
     return NextResponse.json({ message: 'Action failed' }, { status: 500 });

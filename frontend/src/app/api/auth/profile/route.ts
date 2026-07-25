@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initDatabase, getDb, saveDb } from '@/lib/db/init';
+import { initDatabase, query, execute } from '@/lib/db/init';
 import { verifyToken } from '@/lib/auth-jwt';
 
 export async function PUT(req: NextRequest) {
   try {
     await initDatabase();
-    const db = getDb();
     const authHeader = req.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -28,8 +27,7 @@ export async function PUT(req: NextRequest) {
       if (body.address) { sets.push('address = ?'); vals.push(body.address); }
       if (body.avatar) { sets.push('avatar = ?'); vals.push(body.avatar); }
       vals.push(payload.userId);
-      db.run(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`, vals);
-      saveDb();
+      await execute(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`, vals);
     }
 
     if (body.bio || body.gender || body.dob || body.language || body.timezone) {
@@ -41,8 +39,7 @@ export async function PUT(req: NextRequest) {
       if (body.language) { sets.push('language = ?'); vals.push(body.language); }
       if (body.timezone) { sets.push('timezone = ?'); vals.push(body.timezone); }
       vals.push(payload.userId);
-      db.run(`UPDATE profiles SET ${sets.join(', ')} WHERE user_id = ?`, vals);
-      saveDb();
+      await execute(`UPDATE profiles SET ${sets.join(', ')} WHERE user_id = ?`, vals);
     }
 
     return NextResponse.json({ message: 'Profile updated successfully' });
