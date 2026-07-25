@@ -238,7 +238,7 @@ export async function initDatabase(): Promise<any> {
     const { neonSchema } = await import('./neon-schema');
     const statements = neonSchema.split(';').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
     for (const stmt of statements) {
-      try { await neonatalClient.query(stmt + ';'); } catch {}
+      try { await neonatalClient.query(stmt + ';'); } catch (e: any) { console.error('Neon schema error on statement:', stmt.substring(0, 100), e.message); }
     }
     try {
       await neonatalClient.query(`INSERT INTO settings ("key", value, group_name) VALUES ('site_name', 'EarnClicks', 'general') ON CONFLICT ("key") DO NOTHING`);
