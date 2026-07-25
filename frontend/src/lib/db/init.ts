@@ -14,7 +14,9 @@ async function getInitSqlJs() {
 }
 
 let db: any = null;
-const DB_PATH = path.join(process.cwd(), 'data.db');
+// Use /tmp on Vercel (writable), else cwd
+const isVercel = !!process.env.VERCEL;
+const DB_PATH = path.join(isVercel ? '/tmp' : process.cwd(), 'data.db');
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS users (
