@@ -13,6 +13,8 @@ import { Eye, EyeOff, Loader2, CheckCircle2, Shield, Zap, Coins, Users, Trending
 import { useSiteSettings } from '@/hooks/use-site-settings';
 import { LogoImage } from '@/components/ui/logo-image';
 
+export const dynamic = 'force-dynamic';
+
 const taskFeatures = [
   { icon: <Play className="h-5 w-5" />, title: 'Watch Videos', desc: 'Earn 0.02 USDT per view' },
   { icon: <ThumbsUp className="h-5 w-5" />, title: 'Like Posts', desc: 'Earn 0.01 USDT per like' },
