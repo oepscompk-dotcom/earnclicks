@@ -242,7 +242,7 @@ export async function initDatabase(): Promise<any> {
       try {
         await neonatalClient.query(stmt + ';');
       } catch (e: any) {
-        errors.push({ stmt: stmt.substring(0, 80), error: e.message });
+        errors.push(`stmt="${stmt.substring(0, 60)}" error="${e.message}"`);
       }
     }
     try {
