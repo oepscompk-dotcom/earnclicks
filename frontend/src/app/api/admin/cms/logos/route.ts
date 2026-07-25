@@ -12,11 +12,11 @@ export async function GET() {
 
     return NextResponse.json({
       logos: {
-        header_logo: null,
-        header_logo_type: null,
-        footer_logo: null,
-        favicon: null,
-        favicon_type: null,
+        header_logo: settings.header_logo || null,
+        header_logo_type: settings.header_logo_type || null,
+        footer_logo: settings.footer_logo || null,
+        favicon: settings.favicon || null,
+        favicon_type: settings.favicon_type || null,
         site_name: settings.site_name || 'EarnClicks',
         site_tagline: settings.site_tagline || '',
       },
