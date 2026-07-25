@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
@@ -12,8 +12,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Loader2, CheckCircle2, Shield, Zap, Coins, Users, TrendingUp, Globe, Award, Star, Gift, Lock, Mail, User, Send, BarChart3, Target, Smartphone, Heart, MessageCircle, Share2, UserPlus, ThumbsUp, Twitter, Instagram, Youtube, Facebook, Music, Gamepad2, Linkedin, Download, ArrowRight, Sparkles, Zap as ZapIcon, Play } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/use-site-settings';
 import { LogoImage } from '@/components/ui/logo-image';
-
-export const dynamic = 'force-dynamic';
 
 const taskFeatures = [
   { icon: <Play className="h-5 w-5" />, title: 'Watch Videos', desc: 'Earn 0.02 USDT per view' },
@@ -40,7 +38,7 @@ const trustSignals = [
   { icon: <Users className="h-5 w-5" />, text: '250K+ Users' },
 ];
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -297,5 +295,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }
