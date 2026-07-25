@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
-import { Menu, X, ChevronDown, Search, ArrowRight, Zap, Target, Gift, Star, BookOpen, Users, BarChart3, MessageSquare, HelpCircle, Play, Trophy, TrendingUp, Globe, Coins, Shield } from 'lucide-react';
+import { Menu, X, ChevronDown, Search, ArrowRight, Zap, Target, Gift, Star, BookOpen, Users, BarChart3, MessageSquare, HelpCircle, Play, Trophy, TrendingUp, Globe, Coins, Shield, LogOut, User, LayoutDashboard, Settings } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/use-site-settings';
 import { LogoImage } from '@/components/ui/logo-image';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -79,12 +80,15 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const megaRef = useRef<HTMLDivElement>(null);
   const megaTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const searchRef = useRef<HTMLDivElement>(null);
   const signInRef = useRef<HTMLDivElement>(null);
   const signUpRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const { logos, loading } = useSiteSettings();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -102,6 +106,7 @@ export function Header() {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false);
       if (signInRef.current && !signInRef.current.contains(e.target as Node)) setSignInOpen(false);
       if (signUpRef.current && !signUpRef.current.contains(e.target as Node)) setSignUpOpen(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -123,9 +128,137 @@ export function Header() {
     megaTimeoutRef.current = setTimeout(() => setActiveMega(null), 150);
   };
 
+  const authDropdowns = (
+    <>
+      <div className="relative" ref={signInRef}>
+        <button
+          onClick={() => { setSignInOpen(!signInOpen); setSignUpOpen(false); setSearchOpen(false); }}
+          className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-gray-700 hover:text-[#2D4F97] hover:bg-gray-100 rounded-xl transition-all duration-200 flex items-center gap-1"
+        >
+          Sign In <ChevronDown className="h-4 w-4" />
+        </button>
+        {signInOpen && (
+          <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+            <Link
+              href="/tasker-login"
+              className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+              onClick={() => setSignInOpen(false)}
+            >
+              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                <Coins className="h-4 w-4" />
+              </div>
+              <span>Tasker Login</span>
+            </Link>
+            <Link
+              href="/advertiser-login"
+              className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+              onClick={() => setSignInOpen(false)}
+            >
+              <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
+                <MegaphoneIcon className="h-4 w-4" />
+              </div>
+              <span>Advertiser Login</span>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <div className="relative" ref={signUpRef}>
+        <button
+          onClick={() => { setSignUpOpen(!signUpOpen); setSignInOpen(false); setSearchOpen(false); }}
+          className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-[#2D4F97] via-[#1E8A8D] to-[#18C97A] text-white rounded-xl px-6 py-2.5 text-sm font-semibold hover:opacity-90 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-200"
+        >
+          Sign Up <ChevronDown className="h-4 w-4" />
+        </button>
+        {signUpOpen && (
+          <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+            <Link
+              href="/tasker-register"
+              className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+              onClick={() => setSignUpOpen(false)}
+            >
+              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                <Coins className="h-4 w-4" />
+              </div>
+              <span>Become a Tasker</span>
+            </Link>
+            <Link
+              href="/advertiser-register"
+              className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+              onClick={() => setSignUpOpen(false)}
+            >
+              <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
+                <MegaphoneIcon className="h-4 w-4" />
+              </div>
+              <span>Become an Advertiser</span>
+            </Link>
+          </div>
+        )}
+      </div>
+    </>
+  );
+
+  const userMenu = (
+    <div className="relative" ref={userMenuRef}>
+      <button
+        onClick={() => { setUserMenuOpen(!userMenuOpen); setSearchOpen(false); }}
+        className="hidden md:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#2D4F97] hover:bg-gray-100 rounded-xl transition-all duration-200"
+      >
+        <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#2D4F97] to-[#18C97A] flex items-center justify-center">
+          <User className="h-4 w-4 text-white" />
+        </div>
+        <span className="hidden sm:inline">{user?.name}</span>
+        <ChevronDown className="h-4 w-4" />
+      </button>
+      {userMenuOpen && (
+        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+          <Link
+            href={user?.role === 'admin' ? '/admin' : user?.role === 'advertiser' ? '/advertiser' : '/dashboard'}
+            className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+            onClick={() => setUserMenuOpen(false)}
+          >
+            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+              <LayoutDashboard className="h-4 w-4" />
+            </div>
+            <span>Dashboard</span>
+          </Link>
+          <Link
+            href="/dashboard/profile"
+            className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+            onClick={() => setUserMenuOpen(false)}
+          >
+            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
+              <User className="h-4 w-4" />
+            </div>
+            <span>Profile</span>
+          </Link>
+          <Link
+            href="/dashboard/settings"
+            className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+            onClick={() => setUserMenuOpen(false)}
+          >
+            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center">
+              <Settings className="h-4 w-4" />
+            </div>
+            <span>Settings</span>
+          </Link>
+          <hr className="my-2 border-gray-100" />
+          <button
+            onClick={async () => { await logout(); setUserMenuOpen(false); }}
+            className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors flex items-center gap-3"
+          >
+            <div className="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+              <LogOut className="h-4 w-4" />
+            </div>
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
-      {/* Top Announcement Bar */}
       <div className="h-8 gradient-primary flex items-center justify-between px-4 text-white text-[11px] font-medium relative z-[60]">
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline">Welcome to EarnClicks</span>
@@ -244,74 +377,132 @@ export function Header() {
               </form>
             </div>
 
-            {/* Sign In Dropdown */}
-            <div className="relative" ref={signInRef}>
-              <button
-                onClick={() => { setSignInOpen(!signInOpen); setSignUpOpen(false); setSearchOpen(false); }}
-                className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-gray-700 hover:text-[#2D4F97] hover:bg-gray-100 rounded-xl transition-all duration-200 flex items-center gap-1"
-              >
-                Sign In <ChevronDown className="h-4 w-4" />
-              </button>
-              {signInOpen && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
-                  <Link
-                    href="/tasker-login"
-                    className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
-                    onClick={() => setSignInOpen(false)}
+            {user ? (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => { setUserMenuOpen(!userMenuOpen); setSearchOpen(false); }}
+                  className="hidden md:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#2D4F97] hover:bg-gray-100 rounded-xl transition-all duration-200"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#2D4F97] to-[#18C97A] flex items-center justify-center">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+<span className="hidden sm:inline">{user?.name}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <Link
+href={user?.role === 'admin' ? '/admin' : user?.role === 'advertiser' ? '/advertiser' : '/dashboard'}
+                      className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                        <LayoutDashboard className="h-4 w-4" />
+                      </div>
+                      <span>Dashboard</span>
+                    </Link>
+                    <Link
+                      href="/dashboard/profile"
+                      className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
+                        <User className="h-4 w-4" />
+                      </div>
+                      <span>Profile</span>
+                    </Link>
+                    <Link
+                      href="/dashboard/settings"
+                      className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center">
+                        <Settings className="h-4 w-4" />
+                      </div>
+                      <span>Settings</span>
+                    </Link>
+                    <hr className="my-2 border-gray-100" />
+                    <button
+                      onClick={async () => { await logout(); setUserMenuOpen(false); }}
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors flex items-center gap-3"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+                        <LogOut className="h-4 w-4" />
+                      </div>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="relative" ref={signInRef}>
+                  <button
+                    onClick={() => { setSignInOpen(!signInOpen); setSignUpOpen(false); setSearchOpen(false); }}
+                    className="hidden md:inline-flex px-5 py-2.5 text-sm font-semibold text-gray-700 hover:text-[#2D4F97] hover:bg-gray-100 rounded-xl transition-all duration-200 flex items-center gap-1"
                   >
-                    <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-                      <Coins className="h-4 w-4" />
+                    Sign In <ChevronDown className="h-4 w-4" />
+                  </button>
+                  {signInOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                      <Link
+                        href="/tasker-login"
+                        className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                        onClick={() => setSignInOpen(false)}
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                          <Coins className="h-4 w-4" />
+                        </div>
+                        <span>Tasker Login</span>
+                      </Link>
+                      <Link
+                        href="/advertiser-login"
+                        className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                        onClick={() => setSignInOpen(false)}
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
+                          <MegaphoneIcon className="h-4 w-4" />
+                        </div>
+                        <span>Advertiser Login</span>
+                      </Link>
                     </div>
-                    <span>Tasker Login</span>
-                  </Link>
-                  <Link
-                    href="/advertiser-login"
-                    className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
-                    onClick={() => setSignInOpen(false)}
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
-                      <MegaphoneIcon className="h-4 w-4" />
-                    </div>
-                    <span>Advertiser Login</span>
-                  </Link>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Sign Up Dropdown */}
-            <div className="relative" ref={signUpRef}>
-              <button
-                onClick={() => { setSignUpOpen(!signUpOpen); setSignInOpen(false); setSearchOpen(false); }}
-                className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-[#2D4F97] via-[#1E8A8D] to-[#18C97A] text-white rounded-xl px-6 py-2.5 text-sm font-semibold hover:opacity-90 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-200"
-              >
-                Sign Up <ChevronDown className="h-4 w-4" />
-              </button>
-              {signUpOpen && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
-                  <Link
-                    href="/tasker-register"
-                    className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
-                    onClick={() => setSignUpOpen(false)}
+                <div className="relative" ref={signUpRef}>
+                  <button
+                    onClick={() => { setSignUpOpen(!signUpOpen); setSignInOpen(false); setSearchOpen(false); }}
+                    className="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-[#2D4F97] via-[#1E8A8D] to-[#18C97A] text-white rounded-xl px-6 py-2.5 text-sm font-semibold hover:opacity-90 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-200"
                   >
-                    <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-                      <Coins className="h-4 w-4" />
+                    Sign Up <ChevronDown className="h-4 w-4" />
+                  </button>
+                  {signUpOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/10 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                      <Link
+                        href="/tasker-register"
+                        className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                        onClick={() => setSignUpOpen(false)}
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                          <Coins className="h-4 w-4" />
+                        </div>
+                        <span>Become a Tasker</span>
+                      </Link>
+                      <Link
+                        href="/advertiser-register"
+                        className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
+                        onClick={() => setSignUpOpen(false)}
+                      >
+                        <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
+                          <MegaphoneIcon className="h-4 w-4" />
+                        </div>
+                        <span>Become an Advertiser</span>
+                      </Link>
                     </div>
-                    <span>Become a Tasker</span>
-                  </Link>
-                  <Link
-                    href="/advertiser-register"
-                    className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#2D4F97] rounded-xl transition-colors flex items-center gap-3"
-                    onClick={() => setSignUpOpen(false)}
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
-                      <MegaphoneIcon className="h-4 w-4" />
-                    </div>
-                    <span>Become an Advertiser</span>
-                  </Link>
+                  )}
                 </div>
-              )}
-            </div>
-
+              </>
+            )}
             <button className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5 text-gray-700" />
             </button>
@@ -342,12 +533,32 @@ export function Header() {
               ))}
             </nav>
             <div className="p-4 border-t border-gray-100 space-y-2">
-              <Link href="/tasker-login" className="block w-full text-center px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setMobileOpen(false)}>
-                Login
-              </Link>
-              <Link href="/register" className="block w-full text-center gradient-primary text-white rounded-xl px-4 py-3 text-sm font-medium hover:opacity-90 transition-opacity" onClick={() => setMobileOpen(false)}>
-                Start Earning
-              </Link>
+              {user ? (
+                <div className="space-y-2">
+                  <Link
+                    href={user.role === 'admin' ? '/admin' : user.role === 'advertiser' ? '/advertiser' : '/dashboard'}
+                    className="block w-full text-center px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={async () => { await logout(); setMobileOpen(false); }}
+                    className="block w-full text-center px-4 py-3 text-red-600 font-medium hover:text-red-700 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link href="/tasker-login" className="block w-full text-center px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setMobileOpen(false)}>
+                    Login
+                  </Link>
+                  <Link href="/register" className="block w-full text-center gradient-primary text-white rounded-xl px-4 py-3 text-sm font-medium hover:opacity-90 transition-opacity" onClick={() => setMobileOpen(false)}>
+                    Start Earning
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
