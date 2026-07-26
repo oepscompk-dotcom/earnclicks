@@ -305,19 +305,19 @@ export default function AdvertiserDashboard() {
         </div>
 
         {/* ─── Quick Stats ─── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-3">
-          <StatCard icon={Wallet} label="Wallet Balance" value={formatCurrency(displayWallet.total_balance)} subtitle={`Main: ${formatCurrency(displayWallet.main)}`} trend="+5.2%" trendUp className="xl:col-span-1" />
-          <StatCard icon={TrendingUp} label="Today's Spend" value={formatCurrency(displayStats.today_spend)} trend="+12.3%" trendUp={false} className="xl:col-span-1" />
-          <StatCard icon={Target} label="Active Campaigns" value={String(displayStats.active_campaigns)} subtitle={`${runningCampaigns.length} running`} className="xl:col-span-1" />
-          <StatCard icon={Eye} label="Campaign Reach" value={(displayStats.total_reach / 1000).toFixed(0)} suffix="K" trend="+8.7%" trendUp className="xl:col-span-1" />
-          <StatCard icon={CheckCircle} label="Completed Tasks" value={String(displayStats.completed_tasks)} trend="+23" trendUp className="xl:col-span-1" />
-          <StatCard icon={Clock} label="Pending Reviews" value={String(displayStats.pending_reviews)} className="xl:col-span-1" />
-          <StatCard icon={MousePointerClick} label="Clicks" value={(displayStats.total_clicks / 1000).toFixed(1)} suffix="K" trend="+15.4%" trendUp className="xl:col-span-1" />
-          <StatCard icon={Percent} label="CTR" value={String(displayStats.ctr.toFixed(2))} suffix="%" trend="+0.8pp" trendUp className="xl:col-span-1" />
-          <StatCard icon={RefreshCw} label="Conversions" value={String(displayStats.total_conversions)} trend="+9.2%" trendUp className="xl:col-span-1" />
-          <StatCard icon={UserPlus} label="Followers Gained" value={(displayStats.followers_gained / 1000).toFixed(1)} suffix="K" trend="+18.5%" trendUp className="xl:col-span-1" />
-          <StatCard icon={ThumbsUp} label="Likes/Subs" value={(displayStats.likes_subscribers / 1000).toFixed(1)} suffix="K" trend="+11.3%" trendUp className="xl:col-span-1" />
-          <StatCard icon={Zap} label="Today's ROI" value={String(displayStats.today_roi.toFixed(1))} suffix="%" trend="+2.4pp" trendUp className="xl:col-span-1" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <StatCard icon={Wallet} label="Wallet Balance" value={formatCurrency(displayWallet.total_balance)} subtitle={`Main: ${formatCurrency(displayWallet.main)}`} trend="+5.2%" trendUp />
+          <StatCard icon={TrendingUp} label="Today's Spend" value={formatCurrency(displayStats.today_spend)} trend="+12.3%" trendUp={false} />
+          <StatCard icon={Target} label="Active Campaigns" value={String(displayStats.active_campaigns)} subtitle={`${runningCampaigns.length} running`} />
+          <StatCard icon={Eye} label="Campaign Reach" value={(displayStats.total_reach / 1000).toFixed(0)} suffix="K" trend="+8.7%" trendUp />
+          <StatCard icon={CheckCircle} label="Completed Tasks" value={String(displayStats.completed_tasks)} trend="+23" trendUp />
+          <StatCard icon={Clock} label="Pending Reviews" value={String(displayStats.pending_reviews)} />
+          <StatCard icon={MousePointerClick} label="Clicks" value={(displayStats.total_clicks / 1000).toFixed(1)} suffix="K" trend="+15.4%" trendUp />
+          <StatCard icon={Percent} label="CTR" value={String(displayStats.ctr.toFixed(2))} suffix="%" trend="+0.8pp" trendUp />
+          <StatCard icon={RefreshCw} label="Conversions" value={String(displayStats.total_conversions)} trend="+9.2%" trendUp />
+          <StatCard icon={UserPlus} label="Followers Gained" value={(displayStats.followers_gained / 1000).toFixed(1)} suffix="K" trend="+18.5%" trendUp />
+          <StatCard icon={ThumbsUp} label="Likes/Subs" value={(displayStats.likes_subscribers / 1000).toFixed(1)} suffix="K" trend="+11.3%" trendUp />
+          <StatCard icon={Zap} label="Today's ROI" value={String(displayStats.today_roi.toFixed(1))} suffix="%" trend="+2.4pp" trendUp />
         </div>
 
         {/* ─── Campaign Status Overview ─── */}
