@@ -209,7 +209,11 @@ export default function AdvertiserDashboard() {
         else setWallet(MOCK_WALLET);
         if (campaignsRes.status === 'fulfilled') setCampaigns(campaignsRes.value.campaigns ?? campaignsRes.value);
         else setCampaigns(MOCK_CAMPAIGNS);
-        if (dashRes.status === 'fulfilled') setStats(dashRes.value.stats ?? dashRes.value);
+        if (dashRes.status === 'fulfilled') {
+          const d = dashRes.value.stats ?? dashRes.value;
+          if (d && typeof d.today_spend === 'number') setStats(d);
+          else setStats(MOCK_STATS);
+        }
         else setStats(MOCK_STATS);
       } catch {
         if (!cancelled) {
