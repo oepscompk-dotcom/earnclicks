@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { ClientOnly } from '@/components/ui/client-only';
 import { api } from '@/lib/api';
 import { useAuth } from '@/hooks/use-auth';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -337,6 +338,7 @@ export default function AdvertiserDashboard() {
         </div>
 
         {/* ─── Charts Grid ─── */}
+        <ClientOnly fallback={<div className="grid grid-cols-1 lg:grid-cols-2 gap-6"><div className="lg:col-span-2 h-[280px] bg-gray-50/50 rounded-xl flex items-center justify-center text-sm text-gray-400">Loading charts...</div></div>}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Revenue / Spend */}
@@ -473,6 +475,7 @@ export default function AdvertiserDashboard() {
             </CardContent>
           </Card>
         </div>
+        </ClientOnly>
 
         {/* ─── Audience Analytics + Live Campaigns ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -512,6 +515,7 @@ export default function AdvertiserDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
+              <ClientOnly fallback={<div className="h-[280px] flex items-center justify-center text-sm text-gray-400">Loading chart...</div>}>
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie data={MOCK_TRAFFIC} cx="50%" cy="50%" innerRadius={50} outerRadius={90} paddingAngle={4} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
@@ -522,6 +526,7 @@ export default function AdvertiserDashboard() {
                   <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E2E8F0' }} />
                 </PieChart>
               </ResponsiveContainer>
+              </ClientOnly>
             </CardContent>
           </Card>
 
