@@ -253,10 +253,10 @@ export default function AdvertiserDashboard() {
   }
 
   const quickActions = [
-    { label: 'Create Campaign', icon: PlusCircle, color: 'bg-gradient-to-r from-[#2D4F97] to-[#1E8A8D]', href: '/advertiser/campaigns/new' },
+    { label: 'Create Campaign', icon: PlusCircle, color: 'bg-gradient-to-r from-[#2D4F97] to-[#1E8A8D]', href: '/advertiser/campaigns/create' },
     { label: 'Deposit Funds', icon: DollarSign, color: 'bg-gradient-to-r from-[#1E8A8D] to-[#18C79A]', href: '/advertiser/wallet' },
     { label: 'View Reports', icon: FileText, color: 'bg-gradient-to-r from-[#2D4F97] to-[#18C79A]', href: '/advertiser/reports' },
-    { label: 'Contact Support', icon: HeadphonesIcon, color: 'bg-white/20 border border-white/30', href: '/support' },
+    { label: 'Contact Support', icon: HeadphonesIcon, color: 'bg-white/20 border border-white/30', href: '/advertiser/support' },
   ];
 
   return (
@@ -595,7 +595,7 @@ export default function AdvertiserDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
           {[
             { label: 'View All Campaigns', icon: Target, desc: 'Manage & monitor all campaigns', href: '/advertiser/campaigns', color: '#2D4F97' },
-            { label: 'Create New Campaign', icon: PlusCircle, desc: 'Launch a new advertising campaign', href: '/advertiser/campaigns/new', color: '#1E8A8D' },
+            { label: 'Create New Campaign', icon: PlusCircle, desc: 'Launch a new advertising campaign', href: '/advertiser/campaigns/create', color: '#1E8A8D' },
             { label: 'Deposit Funds', icon: DollarSign, desc: 'Add funds to your wallet', href: '/advertiser/wallet', color: '#18C79A' },
             { label: 'View Reports', icon: FileText, desc: 'Detailed analytics & reports', href: '/advertiser/reports', color: '#2D4F97' },
           ].map((action) => {
