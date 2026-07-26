@@ -51,7 +51,7 @@ export default function AdvertiserLayout({ children }: { children: React.ReactNo
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <header className="sticky top-0 z-30 h-16 flex items-center gap-3 border-b border-gray-100 bg-white/80 backdrop-blur-xl px-4 lg:px-6 shrink-0">
+        <header className="sticky top-0 z-30 h-16 flex items-center gap-3 border-b border-gray-100 bg-white/80 backdrop-blur-xl px-4 sm:px-6 lg:px-8 shrink-0">
           <button
             className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
             onClick={() => setSidebarOpen(true)}
@@ -119,7 +119,9 @@ export default function AdvertiserLayout({ children }: { children: React.ReactNo
         </header>
 
         <main className="flex-1 overflow-y-auto">
-          {children}
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            {children}
+          </div>
         </main>
       </div>
 

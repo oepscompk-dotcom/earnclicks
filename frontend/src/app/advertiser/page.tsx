@@ -260,8 +260,7 @@ export default function AdvertiserDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="space-y-6">
 
         {/* ─── Welcome Banner ─── */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#2D4F97] to-[#1E8A8D] p-6 sm:p-8">
@@ -307,7 +306,7 @@ export default function AdvertiserDashboard() {
 
         {/* ─── Quick Stats ─── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-3">
-          <StatCard icon={Wallet} label="Wallet Balance" value={formatCurrency(displayWallet.total_balance)} subtitle={`Main: ${formatCurrency(displayWallet.main)}`} trend="+5.2%" trendUp className="xl:col-span-2" />
+          <StatCard icon={Wallet} label="Wallet Balance" value={formatCurrency(displayWallet.total_balance)} subtitle={`Main: ${formatCurrency(displayWallet.main)}`} trend="+5.2%" trendUp className="xl:col-span-1" />
           <StatCard icon={TrendingUp} label="Today's Spend" value={formatCurrency(displayStats.today_spend)} trend="+12.3%" trendUp={false} className="xl:col-span-1" />
           <StatCard icon={Target} label="Active Campaigns" value={String(displayStats.active_campaigns)} subtitle={`${runningCampaigns.length} running`} className="xl:col-span-1" />
           <StatCard icon={Eye} label="Campaign Reach" value={(displayStats.total_reach / 1000).toFixed(0)} suffix="K" trend="+8.7%" trendUp className="xl:col-span-1" />
@@ -620,7 +619,6 @@ export default function AdvertiserDashboard() {
           })}
         </div>
 
-      </div>
     </div>
   );
 }

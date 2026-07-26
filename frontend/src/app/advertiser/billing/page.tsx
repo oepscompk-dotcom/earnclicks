@@ -69,8 +69,7 @@ export default function AdvertiserBillingPage() {
   const summaryValues = [totalBilled, pendingTotal, paidTotal, overdueTotal];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="space-y-6">
 
         {/* Header */}
         <div>
@@ -240,7 +239,6 @@ export default function AdvertiserBillingPage() {
           </div>
         </div>
 
-      </div>
     </div>
   );
 }
