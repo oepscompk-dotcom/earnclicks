@@ -4,14 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { AdvertiserSidebar } from '@/components/layout/advertiser-sidebar';
-import { QuickStats } from '@/components/layout/quick-stats';
 import { Menu, X } from 'lucide-react';
 
 export default function AdvertiserLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [statsOpen, setStatsOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'advertiser')) {
@@ -117,15 +115,7 @@ export default function AdvertiserLayout({ children }: { children: React.ReactNo
             </div>
           </div>
 
-          <button
-            className="hidden xl:flex p-2.5 rounded-xl hover:bg-gray-100 transition-colors ml-1"
-            onClick={() => setStatsOpen(!statsOpen)}
-            title="Toggle Quick Stats"
-          >
-            <svg className={statsOpen ? 'h-5 w-5 text-[#2D4F97]' : 'h-5 w-5 text-gray-500'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </button>
+
         </header>
 
         <main className="flex-1 overflow-y-auto">
@@ -133,15 +123,7 @@ export default function AdvertiserLayout({ children }: { children: React.ReactNo
         </main>
       </div>
 
-      <div className={`${statsOpen ? 'fixed inset-0 z-50 flex justify-end' : 'hidden'} xl:relative xl:flex xl:z-auto`}>
-        <div
-          className={`${statsOpen ? 'block' : 'hidden'} xl:hidden fixed inset-0 bg-black/50 z-40`}
-          onClick={() => setStatsOpen(false)}
-        />
-        <div className="relative z-50 xl:z-auto">
-          <QuickStats />
-        </div>
-      </div>
+
     </div>
   );
 }
