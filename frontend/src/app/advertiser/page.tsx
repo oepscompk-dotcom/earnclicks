@@ -305,7 +305,7 @@ export default function AdvertiserDashboard() {
         </div>
 
         {/* ─── Quick Stats ─── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           <StatCard icon={Wallet} label="Wallet Balance" value={formatCurrency(displayWallet.total_balance)} subtitle={`Main: ${formatCurrency(displayWallet.main)}`} trend="+5.2%" trendUp />
           <StatCard icon={TrendingUp} label="Today's Spend" value={formatCurrency(displayStats.today_spend)} trend="+12.3%" trendUp={false} />
           <StatCard icon={Target} label="Active Campaigns" value={String(displayStats.active_campaigns)} subtitle={`${runningCampaigns.length} running`} />
