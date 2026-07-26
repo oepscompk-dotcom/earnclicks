@@ -1,4 +1,14 @@
 'use client';
-export default function AdvertiserDashboardPage() {
-  return (<div className="space-y-6"><h1 className="text-2xl font-bold capitalize">Dashboard</h1><p className="text-muted-foreground">This page is under development.</p></div>);
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function AdvertiserDashboardRedirect() {
+  const router = useRouter();
+  useEffect(() => { router.replace('/advertiser'); }, [router]);
+  return (
+    <div className="flex items-center justify-center h-64">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#2D4F97] border-t-transparent" />
+    </div>
+  );
 }
