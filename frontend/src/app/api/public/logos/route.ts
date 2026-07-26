@@ -10,14 +10,17 @@ export async function GET() {
 
     return NextResponse.json({
       logos: {
-        header_logo: null,
-        footer_logo: null,
-        favicon: null,
+        header_logo: settings.header_logo || null,
+        header_logo_type: settings.header_logo_type || null,
+        footer_logo: settings.footer_logo || null,
+        footer_logo_type: settings.footer_logo_type || null,
+        favicon: settings.favicon || null,
+        favicon_type: settings.favicon_type || null,
         site_name: settings.site_name || 'EarnClicks',
         site_tagline: settings.site_tagline || '',
       },
     });
   } catch {
-    return NextResponse.json({ logos: { site_name: 'EarnClicks', site_tagline: '' } });
+    return NextResponse.json({ logos: { header_logo: null, header_logo_type: null, footer_logo: null, footer_logo_type: null, favicon: null, favicon_type: null, site_name: 'EarnClicks', site_tagline: '' } });
   }
 }

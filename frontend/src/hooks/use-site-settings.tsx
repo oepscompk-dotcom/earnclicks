@@ -67,7 +67,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     try {
       const ts = Date.now();
       const data = await api.get<{ logos: SiteLogos }>('/public/logos');
-      const bust = (url: string) => url ? `${url}?v=${ts}` : '';
+      const bust = (url: string) => url && !url.startsWith('data:') ? `${url}?v=${ts}` : (url || '');
       setLogos({
         ...data.logos,
         header_logo: bust(getLogoUrl(data.logos.header_logo)),
